@@ -30,13 +30,18 @@ class VumiBackend(BackendBase):
                         'metadata': {'rapidsms_msg_id': id_}})
         if len(identities) == 1 and 'external_id' in context:
             payload['in_reply_to'] = context['external_id']
+        # add endpoint and/or from_addr, if provided
+        for key in ['endpoint', 'from_addr']:
+            if key in context:
+                payload[key] = context[key]
         if self.sendsms_user and self.sendsms_pass:
             kwargs['auth'] = (self.sendsms_user, self.sendsms_pass)
         kwargs['data'] = json.dumps(payload)
         return kwargs
 
-    def send(self, id_, text, identities, context={}):
-        logger.debug('Sending message: %s' % text)
+    def send(self, id_, text, identities, context=None):
+        logger.debug('Sending message: %s', text)
+        context = context or {}
         kwargs = self.prepare_request(id_, text, identities, context)
         r = requests.post(**kwargs)
         if r.status_code != requests.codes.ok:

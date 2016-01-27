@@ -72,7 +72,7 @@ class KeywordHandler(BaseHandler):
                 $                # match all the way to the end
             """.format(keyword=cls.keyword)
 
-            return re.compile(prefix, re.IGNORECASE | re.VERBOSE)
+            return re.compile(prefix, re.IGNORECASE | re.VERBOSE | re.DOTALL)
         raise HandlerError('KeywordHandler must define a keyword.')
 
     @classmethod
@@ -99,16 +99,16 @@ class KeywordHandler(BaseHandler):
             # return the (rather appropriate) "%s matching query does
             # not exist." message. this can, of course, be overridden by
             # catching the exception within the ``handle`` method.
-            except ObjectDoesNotExist, err:
+            except ObjectDoesNotExist as err:
                 return inst.respond_error(
-                    unicode(err))
+                    str(err))
 
             # another special case: if something was miscast to an int
             # (it was probably a string from the ``text``), return a
             # more friendly (and internationalizable) error.
-            except ValueError, err:
+            except ValueError as err:
                 p = r"^invalid literal for int\(\) with base (\d+?): '(.+?)'$"
-                m = re.match(p, unicode(err))
+                m = re.match(p, str(err))
 
                 # allow other valueerrors to propagate.
                 if m is None:

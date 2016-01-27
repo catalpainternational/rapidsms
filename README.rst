@@ -7,16 +7,19 @@ reporting interface. It was created by the Innovation Team at `UNICEF`_, and is
 under development by `the RapidSMS Team`_.
 
 .. image::
-    https://secure.travis-ci.org/rapidsms/rapidsms.png?branch=develop
-    :alt: Build Status
-    :target: http://travis-ci.org/rapidsms/rapidsms
-
+   https://secure.travis-ci.org/rapidsms/rapidsms.png?branch=develop
+   :alt: Build Status
+   :target: http://travis-ci.org/rapidsms/rapidsms
 
 .. image::
    https://coveralls.io/repos/rapidsms/rapidsms/badge.png?branch=develop
    :alt: Coverage Status
    :target: https://coveralls.io/r/rapidsms/rapidsms?branch=develop
 
+.. image::
+   https://readthedocs.org/projects/rapidsms/badge
+   :alt: Documentation
+   :target: http://rapidsms.readthedocs.org/
 
 .. _Django: http://djangoproject.com
 .. _UNICEF: http://unicef.org
@@ -49,7 +52,6 @@ RapidSMS is best installed via `PyPI`_. To install the latest version, run::
 Dependencies
 ------------
 
-* `django-nose <http://pypi.python.org/pypi/django-nose>`_
 * `djappsettings <http://pypi.python.org/pypi/djappsettings>`_
 * `django-tables2 <https://pypi.python.org/pypi/django-tables2>`_
 * `django-selectable <http://pypi.python.org/pypi/django-selectable>`_
@@ -77,4 +79,4 @@ Contributing
 If you think you've found a bug or are interested in contributing to this
 project, check out `RapidSMS on Github <https://github.com/rapidsms/rapidsms>`_.
 A full contributing guide can be found in the `online documentation
-<http://http://rapidsms.readthedocs.org/en/latest/community/joining.html>`_.
+<http://rapidsms.readthedocs.org/en/latest/community/joining.html>`_.

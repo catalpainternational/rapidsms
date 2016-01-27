@@ -1,7 +1,11 @@
+import mock
+
 from django.test import TestCase
+
 from rapidsms.router.blocking import BlockingRouter
 from rapidsms.backends.base import BackendBase
-from rapidsms.tests.harness import RaisesBackend, CreateDataMixin
+from rapidsms.tests.harness.backend import RaisesBackend
+from rapidsms.tests.harness.base import CreateDataMixin
 from rapidsms.errors import MessageSendingError
 
 
@@ -15,15 +19,15 @@ class RouterBackendTest(CreateDataMixin, TestCase):
         """Valid RapidSMS backend modules should load properly."""
         backend = self.router.add_backend("backend",
                                           "rapidsms.backends.base.BackendBase")
-        self.assertEquals(1, len(self.router.backends.keys()))
-        self.assertEquals(backend, self.router.backends["backend"])
+        self.assertEqual(1, len(self.router.backends.keys()))
+        self.assertEqual(backend, self.router.backends["backend"])
 
     def test_router_downcases_backend_configs(self):
         """Backend configuration should automatically be lowercased."""
         test_backend = "rapidsms.backends.base.BackendBase"
         test_conf = {"a": 1, "B": 2, "Cc": 3}
         backend = self.router.add_backend("backend", test_backend, test_conf)
-        self.assertEquals(len(backend._config), 3)
+        self.assertEqual(len(backend._config), 3)
         self.assertIn("a", backend._config)
         self.assertIn("b", backend._config)
         self.assertIn("cc", backend._config)
@@ -33,9 +37,9 @@ class RouterBackendTest(CreateDataMixin, TestCase):
     def test_add_backend_class(self):
         """Router.add_backend should also accept a class."""
         self.router.add_backend("backend", BackendBase)
-        self.assertEquals(1, len(self.router.backends.keys()))
+        self.assertEqual(1, len(self.router.backends.keys()))
         self.assertIn("backend", self.router.backends.keys())
-        self.assertEquals("backend", self.router.backends['backend'].name)
+        self.assertEqual("backend", self.router.backends['backend'].name)
 
     def test_router_not_configured_with_backend(self):
         """
@@ -56,11 +60,12 @@ class RouterBackendTest(CreateDataMixin, TestCase):
         self.assertRaises(MessageSendingError, self.router.send_to_backend,
                           *args)
 
-    def test_send_captures_exception(self):
+    @mock.patch('rapidsms.router.blocking.router.logger')
+    def test_send_captures_exception(self, mock_logger):
         """BlockingRouter should catch exceptions during sending."""
         backend = self.router.add_backend("backend", RaisesBackend)
         msg = self.create_outgoing_message(backend=backend.model)
-        try:
-            self.router.send_outgoing(msg)
-        except Exception:
-            self.fail("send_outgoing should capture all excetpions.")
+        # shouldn't raise an error
+        self.router.send_outgoing(msg)
+        # but should log an exception
+        mock_logger.exception.assert_called_once_with('backend encountered an error while sending.')
